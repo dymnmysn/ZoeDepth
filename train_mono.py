@@ -90,6 +90,8 @@ def main_worker(gpu, ngpus_per_node, config):
         model = build_model(config)
         model = load_ckpt(config, model)
         #model = parallelize(config, model)
+        if torch.cuda.is_available():
+            model = model.cuda() 
 
         total_params = f"{round(count_parameters(model)/1e6,2)}M"
         config.total_params = total_params
