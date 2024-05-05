@@ -121,6 +121,9 @@ class ZoeDepth(DepthModel):
         self.conditional_log_binomial = ConditionalLogBinomial(
             last_in, bin_embedding_dim, n_classes=n_bins, min_temp=min_temp, max_temp=max_temp)
 
+        if torch.cuda.is_available():
+            self.cuda()
+
     def forward(self, x, return_final_centers=False, denorm=False, return_probs=False, **kwargs):
         """
         Args:
