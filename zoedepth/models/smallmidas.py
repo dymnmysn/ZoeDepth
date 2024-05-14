@@ -199,22 +199,10 @@ class FeatureFusionBlock_custom(nn.Module):
 
 class MidasNet_small(nn.Module):
     """Network for monocular depth estimation.
+    Usage: python run.py --model_type midas_v21_small_256 --input_path ./in.png --output_path ./out.png
     """
 
-    def load(self, path):
-        """Load model from file.
 
-        Args:
-            path (str): file path
-        """
-        parameters = torch.load(path, map_location=torch.device('cpu'))
-
-        if "optimizer" in parameters:
-            parameters = parameters["model"]
-
-        self.load_state_dict(parameters)
-
-#python run.py --model_type midas_v21_small_256 --input_path ./in.png --output_path ./out.png
 
     def __init__(self, path=None, features=64, backbone="efficientnet_lite3", non_negative=True, exportable=True, channels_last=False, align_corners=True,
         blocks={'expand': True}):
@@ -225,10 +213,9 @@ class MidasNet_small(nn.Module):
             features (int, optional): Number of features. Defaults to 256.
             backbone (str, optional): Backbone network for encoder. Defaults to resnet50
         """
-        print("Loading weights: ", path)
 
         super(MidasNet_small, self).__init__()
-
+        print("Loading weights: ", path)
         use_pretrained = False if path else True
                 
         self.channels_last = channels_last
@@ -269,7 +256,19 @@ class MidasNet_small(nn.Module):
         
         if path:
             self.load(path)
+            
+    def load(self, path):
+        """Load model from file.
 
+        Args:
+            path (str): file path
+        """
+        parameters = torch.load(path, map_location=torch.device('cpu'))
+
+        if "optimizer" in parameters:
+            parameters = parameters["model"]
+
+        self.load_state_dict(parameters)
 
     def forward(self, x):
         """Forward pass.
